@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.swervedrive;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
@@ -28,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.AutonConstants;
+import frc.robot.constants.StaticConstants;
+
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import org.photonvision.PhotonCamera;
@@ -48,17 +51,41 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Swerve drive object.
    */
-  private final SwerveDrive         swerveDrive;
+  private final SwerveDrive swerveDrive;
   /**
    * AprilTag field layout.
    */
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-  /**
-   * Initialize {@link SwerveDrive} with the directory provided.
-   *
-   * @param directory Directory of swerve drive config files.
-   */
+/**
+ * Pigeon Object
+ */
+  private final Pigeon2 m_pigeon = new Pigeon2(StaticConstants.Drive.DRIVETRAIN_PIGEON_ID, StaticConstants.Drive.kDriveCANivore);
+/**
+ * Pigeon commands (NOTE: These are redundant. Use commands/swervedrive/AbsoluteFieldDrive commands for YAGSL compatibility)
+ */
+  public double getPigeonAngle() {
+      return Math.toRadians(m_pigeon.getYaw().getValueAsDouble());
+  }
+  public Command zeroGyroscope(double d) {
+      return runOnce(() -> {
+          m_pigeon.setYaw(d);
+      });
+  }
+  public void setPigeonAngle(double d) {
+      m_pigeon.setYaw(d);
+  }
+  public double getRoll() {
+      return m_pigeon.getRoll().getValueAsDouble();
+  }
+
+/**
+ * Vision commands
+ */  
+  public void addVisionMeasurementTimestamp(Pose2d pose, double timestamp) {
+    swerveDrive.addVisionMeasurement(new Pose2d(pose.getTranslation(), new Rotation2d(getPigeonAngle())), timestamp);
+}
+
   public SwerveSubsystem(File directory)
   {
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
@@ -140,6 +167,8 @@ public class SwerveSubsystem extends SubsystemBase
    *
    * @return Distance to speaker in meters.
    */
+
+
   public double getDistanceToSpeaker()
   {
     int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
