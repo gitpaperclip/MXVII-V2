@@ -30,9 +30,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.AutonConstants;
-import frc.robot.constants.StaticConstants;
+import frc.robot.Constants.StaticConstants;
+import frc.robot.Constants.StaticConstants.Auto;
+import frc.robot.Constants.StaticConstants.Drive;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -112,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Drive.MAX_SPEED);
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
@@ -132,7 +132,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
-    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED);
+    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Drive.MAX_SPEED);
   }
 
   /**
@@ -146,9 +146,9 @@ public class SwerveSubsystem extends SubsystemBase
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         AutonConstants.TRANSLATION_PID,
+                                         Auto.TRANSLATION_PID,
                                          // Translation PID constants
-                                         AutonConstants.ANGLE_PID,
+                                         Auto.ANGLE_PID,
                                          // Rotation PID constants
                                          4.5,
                                          // Max module speed, in m/s
@@ -549,7 +549,7 @@ public class SwerveSubsystem extends SubsystemBase
                                                         headingX,
                                                         headingY,
                                                         getHeading().getRadians(),
-                                                        Constants.MAX_SPEED);
+                                                        Drive.MAX_SPEED);
   }
 
   /**
@@ -569,7 +569,7 @@ public class SwerveSubsystem extends SubsystemBase
                                                         scaledInputs.getY(),
                                                         angle.getRadians(),
                                                         getHeading().getRadians(),
-                                                        Constants.MAX_SPEED);
+                                                        Drive.MAX_SPEED);
   }
 
   /**
