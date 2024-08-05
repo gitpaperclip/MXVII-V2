@@ -14,10 +14,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
+import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.constants.StaticConstants;
+import frc.robot.constants.StaticConstants.Drive;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -50,11 +53,11 @@ public class RobotContainer
     // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
     AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
-                                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
+                                                                                                 Drive.LEFT_Y_DEADBAND),
                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
-                                                                                                 OperatorConstants.LEFT_X_DEADBAND),
+                                                                                                 Drive.LEFT_X_DEADBAND),
                                                                    () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
-                                                                                                 OperatorConstants.RIGHT_X_DEADBAND),
+                                                                                                 Drive.RIGHT_X_DEADBAND),
                                                                    driverXbox.getHID()::getYButtonPressed,
                                                                    driverXbox.getHID()::getAButtonPressed,
                                                                    driverXbox.getHID()::getXButtonPressed,
@@ -66,8 +69,8 @@ public class RobotContainer
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
     Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), Drive.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), Drive.LEFT_X_DEADBAND),
         () -> driverXbox.getRightX(),
         () -> driverXbox.getRightY());
 

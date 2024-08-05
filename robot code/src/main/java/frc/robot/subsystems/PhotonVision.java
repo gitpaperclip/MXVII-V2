@@ -50,8 +50,7 @@ public class PhotonVision extends SubsystemBase{
             || (trackedTarget.getBestCameraToTarget().getTranslation().getX() < 6 && DriverStation.isTeleop())
             )){
                 double stdev = 0.01 * trackedTarget.getBestCameraToTarget().getTranslation().getX();
-                // yagsl guy said he is adding a setVisionMeasurementStdDevs command
-             //   dt.setVisionMeasurementStdDevs(VecBuilder.fill(stdev, stdev, 0.5));
+             dt.setVisionMeasurementStdDevs(VecBuilder.fill(stdev, stdev, 0.5));
              dt.addVisionMeasurementTimestamp(pose.get().estimatedPose.toPose2d(), pose.get().timestampSeconds);
                 lastPose = pose.get();
             }
