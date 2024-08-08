@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swervedrive;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -30,10 +32,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.Constants.RioConstants;
+import frc.robot.Constants.RioConstants;
 import frc.robot.Constants.StaticConstants;
 import frc.robot.Constants.StaticConstants.Auto;
 import frc.robot.Constants.StaticConstants.Drive;
 
+import java.io.Console;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import org.photonvision.PhotonCamera;
@@ -168,12 +173,42 @@ public class SwerveSubsystem extends SubsystemBase
                                   );
   }
 
-  /**
-   * Get the distance to the speaker.
-   *
-   * @return Distance to speaker in meters.
-   */
-
+/*
+* Rewrite swerve zeros to the rio 
+*/
+    public Command ResetZeroFile(){
+        return run(() -> {
+            swervelib.SwerveModule[] swerveModules = swerveDrive.getModules();
+            RioConstants.writeSwerveZeros(swerveModules[0].getAbsolutePosition(),
+            swerveModules[1].getAbsolutePosition(),
+            swerveModules[2].getAbsolutePosition(),
+            swerveModules[3].getAbsolutePosition());
+        });
+    }
+/*
+ * Apply current RIO zeroes to Robot
+ */
+  public Command ApplyCurrentZeroes(){
+    return run(() -> {
+      swervelib.SwerveModule[] swerveModules = swerveDrive.getModules();
+      swerveModules[0].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.FRONT_LEFT_MODULE_STEER_OFFSET);
+      swerveModules[1].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.FRONT_RIGHT_MODULE_STEER_OFFSET);
+      swerveModules[2].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.BACK_LEFT_MODULE_STEER_OFFSET);
+      swerveModules[3].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.BACK_RIGHT_MODULE_STEER_OFFSET);
+    });
+  }
+/**
+ * Turns to angle found as 0
+ */
+  public Command PointToZero() {
+    return run(() ->{
+      swervelib.SwerveModule[] swerveModules = swerveDrive.getModules();
+      swerveModules[0].setAngle(0);
+      swerveModules[1].setAngle(0);
+      swerveModules[2].setAngle(0);
+      swerveModules[3].setAngle(0);
+    });
+  }
 
   public double getDistanceToSpeaker()
   {
