@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swervedrive;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -47,6 +48,7 @@ import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
+import swervelib.motors.TalonFXSwerve;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
@@ -179,7 +181,7 @@ public class SwerveSubsystem extends SubsystemBase
     public Command ResetZeroFile(){
         return run(() -> {
             swervelib.SwerveModule[] swerveModules = swerveDrive.getModules();
-            RioConstants.writeSwerveZeros(swerveModules[0].getAbsolutePosition(),
+            RioConstants.writeZeroes(swerveModules[0].getAbsolutePosition(),
             swerveModules[1].getAbsolutePosition(),
             swerveModules[2].getAbsolutePosition(),
             swerveModules[3].getAbsolutePosition());
@@ -191,10 +193,10 @@ public class SwerveSubsystem extends SubsystemBase
   public Command ApplyCurrentZeroes(){
     return run(() -> {
       swervelib.SwerveModule[] swerveModules = swerveDrive.getModules();
-      swerveModules[0].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.FRONT_LEFT_MODULE_STEER_OFFSET);
-      swerveModules[1].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.FRONT_RIGHT_MODULE_STEER_OFFSET);
-      swerveModules[2].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.BACK_LEFT_MODULE_STEER_OFFSET);
-      swerveModules[3].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.Drive.BACK_RIGHT_MODULE_STEER_OFFSET);
+      swerveModules[0].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.getSwerveZeroes(0));
+      swerveModules[1].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.getSwerveZeroes(1));
+      swerveModules[2].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.getSwerveZeroes(2));
+      swerveModules[3].getAbsoluteEncoder().setAbsoluteEncoderOffset(RioConstants.getSwerveZeroes(3));
     });
   }
 /**

@@ -6,70 +6,41 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.util.Special;
 
 public final class RioConstants {
 
-    /*
-     * Reads all constants from the RIO
-     */
-    public static void readConstants(){
-        File swerveZeros = new File("/home/lvuser/constants/SwerveZeros.txt");
-        if (swerveZeros.exists()) {
-            try {
-                Scanner sc = new Scanner(swerveZeros);
-                Drive.FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(Double.parseDouble(sc.nextLine()));
-                Drive.FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(Double.parseDouble(sc.nextLine()));
-                Drive.BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(Double.parseDouble(sc.nextLine()));
-                Drive.BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(Double.parseDouble(sc.nextLine()));
-                sc.close();
-            } catch (FileNotFoundException e) {
-                System.out.println("Swerve Zeros file not found");
-            }
-        }
+    public static void sendSwerveZeroes() {
+        Preferences.setDouble("FRONT_LEFT_MODULE_STEER_OFFSET", Drive.FRONT_LEFT_MODULE_STEER_OFFSET);
+        Preferences.setDouble("FRONT_RIGHT_MODULE_STEER_OFFSET", Drive.FRONT_RIGHT_MODULE_STEER_OFFSET);
+        Preferences.setDouble("BACK_LEFT_MODULE_STEER_OFFSET", Drive.BACK_LEFT_MODULE_STEER_OFFSET);
+        Preferences.setDouble("BACK_RIGHT_MODULE_STEER_OFFSET", Drive.BACK_RIGHT_MODULE_STEER_OFFSET);
     }
 
-    /*
-     * Writes swerve zeros to RIO file
-     * 
-     * @param  fl  Front Left offset
-     * @param  fr  Front Right offset
-     * @param  bl  Back Left offset
-     * @param  br  Back Right offset
-     */
-    public static void writeSwerveZeros(double fl, double fr, double bl, double br){
-        File swerveZeros = new File("/home/lvuser/constants/SwerveZeros.txt");
-        swerveZeros.setExecutable(true);
-        swerveZeros.setReadable(true);
-        swerveZeros.setWritable(true);
-        try {
-            swerveZeros.createNewFile();
-            FileWriter writer = new FileWriter("/home/lvuser/constants/SwerveZeros.txt");
-            writer.write(Special
-                    .floorMod(Math.toDegrees(fl
-                            - Drive.FRONT_LEFT_MODULE_STEER_OFFSET), 360)
-                    + "\n");
-            writer.write(Special
-                    .floorMod(Math.toDegrees(fr
-                            - Drive.FRONT_RIGHT_MODULE_STEER_OFFSET), 360)
-                    + "\n");
-            writer.write(Special
-                    .floorMod(Math.toDegrees(bl
-                            - Drive.BACK_LEFT_MODULE_STEER_OFFSET), 360)
-                    + "\n");
-            writer.write(Special
-                    .floorMod(Math.toDegrees(br
-                            - Drive.BACK_RIGHT_MODULE_STEER_OFFSET), 360)
-                    + "\n");
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("File could not be found when writing to swerve zeros");
-        }
+    public static void writeZeroes(double fl, double fr, double bl, double br) {
+        Drive.FRONT_LEFT_MODULE_STEER_OFFSET = fl;
+        Drive.FRONT_RIGHT_MODULE_STEER_OFFSET = fr;
+        Drive.BACK_LEFT_MODULE_STEER_OFFSET = bl;
+        Drive.BACK_RIGHT_MODULE_STEER_OFFSET = br;
+
+        sendSwerveZeroes();
     }
-    public static class Drive{
-        public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
-        public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
-        public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
-        public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
+
+    public static double getSwerveZeroes(int index) {
+        double[] swerveZeroArray = new double[4];
+        swerveZeroArray[0] = Preferences.getDouble("FRONT_LEFT_MODULE_STEER_OFFSET", Drive.FRONT_LEFT_MODULE_STEER_OFFSET);
+        swerveZeroArray[1] = Preferences.getDouble("FRONT_RIGHT_MODULE_STEER_OFFSET", Drive.FRONT_RIGHT_MODULE_STEER_OFFSET);
+        swerveZeroArray[2] = Preferences.getDouble("BACK_LEFT_MODULE_STEER_OFFSET", Drive.BACK_LEFT_MODULE_STEER_OFFSET);
+        swerveZeroArray[3] = Preferences.getDouble("BACK_RIGHT_MODULE_STEER_OFFSET", Drive.BACK_RIGHT_MODULE_STEER_OFFSET);
+
+        return swerveZeroArray[index];
+    }
+
+    public static class Drive {
+        public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toDegrees(0.0);
+        public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toDegrees(0.0);
+        public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toDegrees(0.0);
+        public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toDegrees(0.0);
     }
 }
