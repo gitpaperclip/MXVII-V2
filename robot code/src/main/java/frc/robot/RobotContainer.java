@@ -33,7 +33,6 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/falcon"));
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -41,7 +40,6 @@ public class RobotContainer
   {
     // Configure the trigger bindings
     configureBindings();
-
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
     // controls are front-left positive

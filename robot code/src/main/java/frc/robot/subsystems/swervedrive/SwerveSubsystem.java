@@ -178,10 +178,11 @@ public class SwerveSubsystem extends SubsystemBase
 /*
 * Rewrite swerve zeros to the rio 
 */
-    public Command ResetZeroFile(){
+    public Command writeZeroesToNT(){
         return run(() -> {
             swervelib.SwerveModule[] swerveModules = swerveDrive.getModules();
-            RioConstants.writeZeroes(swerveModules[0].getAbsolutePosition(),
+            RioConstants.writeZeroes(
+            swerveModules[0].getAbsolutePosition(),
             swerveModules[1].getAbsolutePosition(),
             swerveModules[2].getAbsolutePosition(),
             swerveModules[3].getAbsolutePosition());
